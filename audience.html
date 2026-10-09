@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Live Poll — Audience Space</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Google Translate Indian Languages Filter Script API -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'hi,ta,te,kn,ml,mr,gu,bn,pa,or',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+
+  <!-- Top Utilities Bar -->
+  <div class="top-nav-bar" style="max-width: 600px;">
+    <div class="nav-links">
+      <button id="btn-change-code" class="nav-pill" style="border: none; background: transparent; cursor: pointer;">🔑 Change Code</button>
+      <span class="room-code-tag">
+        CODE: <span id="aud-code-badge" class="room-code-val">------</span>
+      </span>
+    </div>
+    <div class="attendance-badge" style="margin: 0;">
+      <span id="attendance-count">1</span> online
+    </div>
+  </div>
+
+  <!-- Clean Translate Widget Wrapper -->
+  <div id="google_translate_element" style="margin-bottom: 12px; display: flex; justify-content: center; width: 100%;"></div>
+
+  <!-- Dynamic Top Banner Area -->
+  <div class="brand-logo-container">
+    <div class="brand-logo-wrapper">
+      <img id="aud-banner-img" src="https://www.sabbath.school/assets/img/lessons/2026/3/_13fb.png" alt="Sabbath School Logo" class="brand-logo" />
+      <h1 class="lesson-topic-title" id="aud-topic-title">Share HIM</h1>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    <!-- Active Slide Title Window Card -->
+    <div class="card center" style="display: flex; flex-direction: column; align-items: center;">
+      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 8px;">
+        <span id="aud-q-order" style="font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase;">
+          Question 1 of 10
+        </span>
+        <span id="aud-mode-pill" style="font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 50px; background: #ede9fe; color: var(--primary);">
+          VOTING OPEN
+        </span>
+      </div>
+
+      <h2 id="question" style="margin: 4px 0 0 0; text-align: center; width: 100%;">
+        Waiting for presenter to start...
+      </h2>
+
+      <!-- 15-Second Sync Timer Bar -->
+      <div id="aud-timer-wrap" style="width: 100%; margin-top: 14px; display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">
+          <span>⏱️ Question Timer</span>
+          <span id="aud-timer-text">15s</span>
+        </div>
+        <div class="timer-progress-bar-wrap">
+          <div id="aud-timer-progress-fill" class="timer-progress-fill" style="width: 100%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Biblical Answer & Evidence Reveal Container -->
+    <div id="audience-biblical-explanation-box" style="display: none;"></div>
+
+    <!-- Interactive Voting Control Card -->
+    <div class="card" id="card-voting-controls">
+      <h3 style="margin-bottom: 8px;">Cast Your Vote</h3>
+      
+      <button class="option-btn" id="a">
+        <span class="opt-prefix" style="background: var(--color-a); color: white;">A</span>
+        <span id="btn-text-a" style="flex: 1;">Option A</span>
+      </button>
+      <button class="option-btn" id="b">
+        <span class="opt-prefix" style="background: var(--color-b); color: white;">B</span>
+        <span id="btn-text-b" style="flex: 1;">Option B</span>
+      </button>
+      <button class="option-btn" id="c">
+        <span class="opt-prefix" style="background: var(--color-c); color: white;">C</span>
+        <span id="btn-text-c" style="flex: 1;">Option C</span>
+      </button>
+      <button class="option-btn" id="d">
+        <span class="opt-prefix" style="background: var(--color-d); color: white;">D</span>
+        <span id="btn-text-d" style="flex: 1;">Option D</span>
+      </button>
+      
+      <!-- Custom Write-In Option Block -->
+      <div id="custom-write-in-container" class="custom-write-in-box">
+        <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em;">
+          Or Write Your Own Answer:
+        </label>
+        <input type="text" id="custom-text-input" class="custom-input" placeholder="Type your alternative response here..." />
+        <button id="custom-text-submit" class="btn-primary" style="margin-top: 4px; padding: 14px;">Submit Custom Answer</button>
+      </div>
+
+      <p id="status" class="success" style="margin-bottom: 0;"></p>
+    </div>
+
+    <!-- Realtime Metrics Progress Card -->
+    <div class="card">
+      <h3>Live Polling Metrics</h3>
+      <div class="native-chart">
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="lbl-a">Option A</span>
+            <span class="chart-count-text" id="cnt-a">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="bar-a" class="chart-fill"></div></div>
+        </div>
+        
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="lbl-b">Option B</span>
+            <span class="chart-count-text" id="cnt-b">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="bar-b" class="chart-fill"></div></div>
+        </div>
+        
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="lbl-c">Option C</span>
+            <span class="chart-count-text" id="cnt-c">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="bar-c" class="chart-fill"></div></div>
+        </div>
+        
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="lbl-d">Option D</span>
+            <span class="chart-count-text" id="cnt-d">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="bar-d" class="chart-fill"></div></div>
+        </div>
+
+        <!-- Dedicated Custom Answers Summary Bar -->
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="lbl-custom" style="color: var(--text-muted); font-style: italic;">Custom Write-In Answers</span>
+            <span class="chart-count-text" id="cnt-custom">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="bar-custom" class="chart-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Enter Response Code Modal (If accessed without ?code=) -->
+  <div id="modal-join-code" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+      <h2 style="font-size: 22px; margin-bottom: 8px;">Enter Poll Response Code</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+        Please enter the session code displayed on the presenter's screen:
+      </p>
+
+      <input type="text" id="input-modal-code" class="form-control" placeholder="e.g. 482915" style="font-size: 22px; font-weight: 800; text-align: center; text-transform: uppercase; font-family: monospace; letter-spacing: 0.1em;" value="" />
+
+      <button id="btn-submit-modal-code" class="btn-primary btn-large" style="width: 100%; margin-top: 14px;">
+        Join Poll &rarr;
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="audience.js"></script>
+</body>
+</html>

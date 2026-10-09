@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presenter Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Google Translate Indian Languages Filter Script API for Presenter -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'hi,ta,te,kn,ml,mr,gu,bn,pa,or',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+
+  <!-- Top Utilities Bar -->
+  <div class="top-nav-bar">
+    <div class="nav-links">
+      <a href="index.html?host=true" class="nav-pill">&larr; Home</a>
+      <span class="room-code-tag">
+        SESSION CODE: <span id="p-code-badge" class="room-code-val">482915</span>
+      </span>
+      <div class="attendance-badge" style="margin: 0;">
+        <span id="p-attendance-count">1</span> attending
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <a id="p-link-projector" href="projector.html" target="_blank" class="btn-primary" style="padding: 6px 12px; font-size: 13px; text-decoration: none;">
+        📺 Big Screen Projector
+      </a>
+      <a id="p-link-remote" href="remote.html" target="_blank" class="btn-outline" style="padding: 6px 12px; font-size: 13px; text-decoration: none; color: var(--primary);">
+        📱 Phone Remote
+      </a>
+      <a id="p-link-admin" href="admin.html" class="btn-outline" style="padding: 6px 12px; font-size: 13px; text-decoration: none;">
+        ⚙️ Studio
+      </a>
+    </div>
+  </div>
+
+  <!-- Clean Translate Widget Wrapper -->
+  <div id="google_translate_element" style="margin-bottom: 12px; display: flex; justify-content: center; width: 100%;"></div>
+
+  <!-- Dynamic Top Banner Area -->
+  <div class="brand-logo-container">
+    <div class="brand-logo-wrapper">
+      <img id="p-banner-img" src="https://www.sabbath.school/assets/img/lessons/2026/3/_13fb.png" alt="Sabbath School Logo" class="brand-logo" />
+      <h1 class="lesson-topic-title" id="p-topic-title">Share HIM</h1>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    <!-- 15-Second Response Timer Widget -->
+    <div class="card" style="padding: 18px 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0;">⏱️ Question Response Timer (15s)</h3>
+        <button id="p-btn-sound" class="btn-outline" style="padding: 4px 10px; font-size: 12px;">
+          🔊 Sound: ON
+        </button>
+      </div>
+
+      <div class="timer-container" style="margin: 12px 0 6px 0;">
+        <div id="p-timer-box" class="timer-box" style="width: 100%; justify-content: center;">
+          <span style="font-size: 22px;">⏳</span>
+          <span id="p-timer-digits" class="timer-digits">15</span>
+          <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);">SEC</span>
+        </div>
+      </div>
+
+      <div class="timer-progress-bar-wrap">
+        <div id="p-timer-progress-fill" class="timer-progress-fill" style="width: 100%;"></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px; margin-top: 12px;">
+        <button id="p-btn-start-timer" class="btn-primary" style="padding: 12px; font-size: 14px; background: #10b981 !important;">
+          ▶ Start 15s Timer
+        </button>
+        <button id="p-btn-reset-timer" class="btn-outline" style="padding: 12px; font-size: 14px;">
+          ↺ Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Presentation Monitor Controls -->
+    <div class="card center" style="display: flex; flex-direction: column; align-items: center;">
+      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 8px;">
+        <span id="p-order-badge" style="font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase;">
+          Question 1 of 10
+        </span>
+        <span id="p-mode-pill" style="font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 50px; background: #ede9fe; color: var(--primary);">
+          VOTING
+        </span>
+      </div>
+
+      <h3 style="margin-top: 4px; color: var(--text-muted);">Current Presenting Question</h3>
+      <h2 id="pquestion" style="margin: 8px 0 16px 0; text-align: center; width: 100%;">Loading dashboard questions...</h2>
+      
+      <!-- Biblical Answer & Explanation Reveal Container -->
+      <div id="pextra-explanation-card" style="display: none; width: 100%; text-align: left;"></div>
+      
+      <!-- Complete Grid Row Control Matrix -->
+      <div style="display: grid; grid-template-columns: 1fr 1.4fr 1.4fr 0.8fr; gap: 8px; width: 100%; margin-top: 14px; box-sizing: border-box;">
+        <button id="btn-prev-q" style="padding: 14px 8px; font-weight: 700;">⏮ Prev Q</button>
+        <button id="btn-reveal-explanation" style="padding: 14px 8px; font-weight: 800; background: #ecfdf5; border: 2px solid #10b981; color: #065f46;">💡 Show Explanation</button>
+        <button id="btn-next-question" style="padding: 14px 8px; font-weight: 800; background: var(--primary); color: white;">Next Question ⏩</button>
+        <button id="btn-end-session" style="background: #ef4444; color: white; border: none; padding: 14px 8px; font-weight: 700;">End</button>
+      </div>
+    </div>
+
+    <!-- Live Presenter Metric Feedback Grid -->
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="margin: 0;">Live Audience Response Feed</h3>
+        <span id="p-total-votes" style="font-size: 12px; font-weight: 700; color: var(--primary);">0 votes</span>
+      </div>
+
+      <div class="native-chart">
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="plbl-a">Option A</span>
+            <span class="chart-count-text" id="pcnt-a">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="pbar-a" class="chart-fill"></div></div>
+        </div>
+        
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="plbl-b">Option B</span>
+            <span class="chart-count-text" id="pcnt-b">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="pbar-b" class="chart-fill"></div></div>
+        </div>
+        
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="plbl-c">Option C</span>
+            <span class="chart-count-text" id="pcnt-c">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="pbar-c" class="chart-fill"></div></div>
+        </div>
+        
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="plbl-d">Option D</span>
+            <span class="chart-count-text" id="pcnt-d">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="pbar-d" class="chart-fill"></div></div>
+        </div>
+
+        <!-- Presenter Custom Write-In Results Tracking Bar -->
+        <div class="chart-row">
+          <div class="chart-label-container">
+            <span class="chart-label-text" id="plbl-custom" style="color: var(--text-muted); font-style: italic;">Custom Write-In Answers</span>
+            <span class="chart-count-text" id="pcnt-custom">0 votes (0%)</span>
+          </div>
+          <div class="chart-track"><div id="pbar-custom" class="chart-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="presenter.js"></script>
+</body>
+</html>

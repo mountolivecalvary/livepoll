@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Poll — Join Session</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .host-portal-card {
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 24px;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Constant Top Banner Area -->
+  <div class="brand-logo-container" style="margin-top: 24px;">
+    <div class="brand-logo-wrapper">
+      <img id="hub-banner-img" src="https://www.sabbath.school/assets/img/lessons/2026/3/_13fb.png" alt="Sabbath School Logo" class="brand-logo" />
+      <h1 class="lesson-topic-title" id="hub-topic-title">Share HIM</h1>
+      <p class="lesson-subtitle" id="hub-topic-subtitle">Live Interactive Sabbath School Poll</p>
+    </div>
+  </div>
+
+  <div class="container" style="max-width: 500px;">
+    
+    <!-- Audience Exclusive Quick Join Card (Default View) -->
+    <div class="card" style="border: 2px solid #818cf8; background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%); padding: 28px;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+        <span style="font-size: 20px;">👥</span>
+        <h3 style="color: var(--primary); margin: 0; font-size: 14px;">Join Live Poll</h3>
+      </div>
+      
+      <p style="text-align: center; margin: 0 0 20px 0; font-size: 14px; color: var(--text-muted);">
+        Enter the 6-digit code shown on the screen to participate:
+      </p>
+      
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <input 
+          type="text" 
+          id="join-code-input" 
+          class="form-control" 
+          placeholder="e.g. 482915" 
+          style="font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; text-align: center; padding: 16px; font-family: monospace;" 
+          value="482915" 
+        />
+        <button id="btn-join" class="btn-primary btn-large" style="width: 100%; padding: 16px; font-size: 16px; font-weight: 800;">
+          Join Poll &rarr;
+        </button>
+      </div>
+
+      <div style="text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-muted);">
+        🔒 Audience Space &bull; Votes are anonymous & synchronized
+      </div>
+    </div>
+
+    <!-- Hidden Host & Presenter Control Suite (ONLY visible when unlocked by host) -->
+    <div id="host-suite-container" style="display: none;">
+      <div class="card host-portal-card" style="border-left: 5px solid var(--primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="margin: 0; color: #1e1b4b; display: flex; align-items: center; gap: 6px;">
+            <span>🛡️</span> Presenter & Projection Suite
+          </h3>
+          <button id="btn-lock-host" class="btn-outline" style="padding: 4px 10px; font-size: 11px; color: var(--text-muted);" title="Hide presenter controls">
+            🔒 Hide / Lock
+          </button>
+        </div>
+
+        <p style="font-size: 13px; color: var(--text-muted); margin: 0 0 16px 0;">
+          Select your display screen or controller for session: <strong id="host-code-display" style="color: var(--primary);">482915</strong>
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Projector Big Screen -->
+          <a id="link-projector" href="projector.html?code=482915" class="option-btn" style="text-decoration: none; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #6366f1; margin: 0;">
+            <div>
+              <div style="font-size: 15px; font-weight: 800; color: #1e1b4b;">📺 Projector / Big Screen Mode</div>
+              <div style="font-size: 12px; font-weight: 500; color: var(--text-muted); margin-top: 2px;">
+                16:9 full-screen presentation, 15s timer, audio ticks & buzzer.
+              </div>
+            </div>
+            <span style="font-size: 18px; font-weight: 800; color: #6366f1;">&rarr;</span>
+          </a>
+
+          <!-- Phone Controller Remote -->
+          <a id="link-remote" href="remote.html?code=482915" class="option-btn" style="text-decoration: none; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #0ea5e9; margin: 0;">
+            <div>
+              <div style="font-size: 15px; font-weight: 800; color: #0c4a6e;">📱 Phone Remote Controller</div>
+              <div style="font-size: 12px; font-weight: 500; color: var(--text-muted); margin-top: 2px;">
+                Handheld phone remote: start 15s timer, switch questions, reveal answers.
+              </div>
+            </div>
+            <span style="font-size: 18px; font-weight: 800; color: #0ea5e9;">&rarr;</span>
+          </a>
+
+          <!-- Admin Studio -->
+          <a id="link-admin" href="admin.html?code=482915" class="option-btn" style="text-decoration: none; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #10b981; margin: 0;">
+            <div>
+              <div style="font-size: 15px; font-weight: 800; color: #064e3b;">⚙️ Admin Dashboard & Question Studio</div>
+              <div style="font-size: 12px; font-weight: 500; color: var(--text-muted); margin-top: 2px;">
+                Manage questions, options, answers, and customize header image.
+              </div>
+            </div>
+            <span style="font-size: 18px; font-weight: 800; color: #10b981;">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Discreet Host / Presenter Access Footer Link -->
+    <div style="text-align: center; margin-top: 20px;">
+      <button id="btn-toggle-host-login" style="background: transparent; border: none; font-size: 12px; color: #94a3b8; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 50px;">
+        🔒 Presenter / Host Access
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Host PIN Authentication Modal -->
+  <div id="modal-host-auth" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 380px; text-align: center;">
+      <div style="font-size: 32px; margin-bottom: 8px;">🔐</div>
+      <h2 style="font-size: 20px; margin-bottom: 6px;">Host Verification</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+        Enter Host PIN to access the presenter remote, projector mode, and question studio:
+      </p>
+
+      <input 
+        type="password" 
+        id="input-host-pin" 
+        class="form-control" 
+        placeholder="Enter PIN" 
+        style="font-size: 20px; font-weight: 800; text-align: center; letter-spacing: 0.2em; padding: 12px;" 
+        maxlength="8" 
+      />
+
+      <div id="host-pin-error" style="color: #ef4444; font-size: 12px; font-weight: 700; margin-top: 6px; display: none;">
+        Incorrect PIN. Please try again.
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <button id="btn-cancel-host-auth" class="btn-outline" style="flex: 1;">Cancel</button>
+        <button id="btn-verify-host-pin" class="btn-primary" style="flex: 1;">Unlock Suite</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { RealtimePollEngine, DEFAULT_SESSION_CODE } from "./realtime-engine.js";
+
+    const DEFAULT_HOST_PIN = "212208";
+    if (localStorage.getItem("POLL_CUSTOM_HOST_PIN") === "7777") {
+      localStorage.removeItem("POLL_CUSTOM_HOST_PIN");
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const hostQuery = urlParams.get("host") === "true" || urlParams.get("admin") === "true";
+
+    const savedCode = localStorage.getItem("ACTIVE_POLL_CODE") || DEFAULT_SESSION_CODE;
+    const inputEl = document.getElementById("join-code-input");
+    const hostCodeDisplay = document.getElementById("host-code-display");
+    const linkProj = document.getElementById("link-projector");
+    const linkRemote = document.getElementById("link-remote");
+    const linkAdmin = document.getElementById("link-admin");
+
+    const hostSuiteContainer = document.getElementById("host-suite-container");
+    const btnToggleHostLogin = document.getElementById("btn-toggle-host-login");
+    const btnLockHost = document.getElementById("btn-lock-host");
+    const modalHostAuth = document.getElementById("modal-host-auth");
+    const inputHostPin = document.getElementById("input-host-pin");
+    const btnVerifyHostPin = document.getElementById("btn-verify-host-pin");
+    const btnCancelHostAuth = document.getElementById("btn-cancel-host-auth");
+    const hostPinError = document.getElementById("host-pin-error");
+
+    function updateCodeLinks(code) {
+      const cleanCode = (code || DEFAULT_SESSION_CODE).trim().toUpperCase();
+      localStorage.setItem("ACTIVE_POLL_CODE", cleanCode);
+      if (inputEl) inputEl.value = cleanCode;
+      if (hostCodeDisplay) hostCodeDisplay.innerText = cleanCode;
+      if (linkProj) linkProj.href = `projector.html?code=${cleanCode}`;
+      if (linkRemote) linkRemote.href = `remote.html?code=${cleanCode}`;
+      if (linkAdmin) linkAdmin.href = `admin.html?code=${cleanCode}`;
+    }
+
+    updateCodeLinks(savedCode);
+
+    document.getElementById("btn-join")?.addEventListener("click", () => {
+      const val = (inputEl.value || DEFAULT_SESSION_CODE).trim().toUpperCase();
+      window.location.href = `audience.html?code=${val}`;
+    });
+
+    inputEl?.addEventListener("input", (e) => {
+      updateCodeLinks(e.target.value);
+    });
+
+    inputEl?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        document.getElementById("btn-join")?.click();
+      }
+    });
+
+    // --- Host Protection System ---
+    function isHostUnlocked() {
+      return hostQuery || localStorage.getItem("POLL_HOST_UNLOCKED") === "true";
+    }
+
+    function renderHostSuite() {
+      if (isHostUnlocked()) {
+        if (hostSuiteContainer) hostSuiteContainer.style.display = "block";
+        if (btnToggleHostLogin) btnToggleHostLogin.style.display = "none";
+      } else {
+        if (hostSuiteContainer) hostSuiteContainer.style.display = "none";
+        if (btnToggleHostLogin) btnToggleHostLogin.style.display = "inline-flex";
+      }
+    }
+
+    btnToggleHostLogin?.addEventListener("click", () => {
+      if (isHostUnlocked()) {
+        renderHostSuite();
+      } else {
+        if (inputHostPin) inputHostPin.value = "";
+        if (hostPinError) hostPinError.style.display = "none";
+        if (modalHostAuth) modalHostAuth.style.display = "flex";
+        setTimeout(() => inputHostPin?.focus(), 100);
+      }
+    });
+
+    btnCancelHostAuth?.addEventListener("click", () => {
+      if (modalHostAuth) modalHostAuth.style.display = "none";
+    });
+
+    function verifyPin() {
+      const entered = (inputHostPin?.value || "").trim();
+      const currentPin = localStorage.getItem("POLL_CUSTOM_HOST_PIN") || DEFAULT_HOST_PIN;
+
+      if (entered === currentPin) {
+        localStorage.setItem("POLL_HOST_UNLOCKED", "true");
+        if (modalHostAuth) modalHostAuth.style.display = "none";
+        renderHostSuite();
+      } else {
+        if (hostPinError) hostPinError.style.display = "block";
+      }
+    }
+
+    btnVerifyHostPin?.addEventListener("click", verifyPin);
+    inputHostPin?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") verifyPin();
+    });
+
+    btnLockHost?.addEventListener("click", () => {
+      localStorage.removeItem("POLL_HOST_UNLOCKED");
+      if (hostSuiteContainer) hostSuiteContainer.style.display = "none";
+      if (btnToggleHostLogin) btnToggleHostLogin.style.display = "inline-flex";
+    });
+
+    renderHostSuite();
+
+    // Load active session metadata for title/image
+    const engine = new RealtimePollEngine(savedCode);
+    engine.getSessionData().then(session => {
+      if (session) {
+        if (session.title) document.getElementById("hub-topic-title").innerText = session.title;
+        if (session.header_image_url) document.getElementById("hub-banner-img").src = session.header_image_url;
+      }
+    });
+  </script>
+</body>
+</html>

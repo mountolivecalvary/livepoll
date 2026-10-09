@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard & Question Studio — Live Poll</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .question-item-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+    .question-item-card:hover {
+      border-color: #cbd5e1;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .preset-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 50px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-pill:hover {
+      background: #e0e7ff;
+      border-color: #a5b4fc;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Utilities Bar -->
+  <div class="top-nav-bar">
+    <div class="nav-links">
+      <a href="index.html?host=true" class="nav-pill">&larr; Home</a>
+      <span class="room-code-tag">
+        SESSION: <span id="admin-current-code" class="room-code-val">482915</span>
+      </span>
+      <span id="supabase-status-badge" style="font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 100px; background: #fef3c7; color: #92400e;">
+        Checking Database...
+      </span>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <button id="btn-open-db-settings" class="btn-outline" style="padding: 6px 12px; font-size: 13px;">
+        ⚙️ Database Settings
+      </button>
+      <a id="link-admin-projector" href="projector.html" target="_blank" class="btn-primary" style="padding: 6px 14px; font-size: 13px; text-decoration: none;">
+        📺 Launch Projector
+      </a>
+      <a id="link-admin-remote" href="remote.html" target="_blank" class="btn-outline" style="padding: 6px 14px; font-size: 13px; text-decoration: none; color: var(--primary);">
+        📱 Phone Remote
+      </a>
+    </div>
+  </div>
+
+  <div class="container-wide">
+    
+    <!-- Hero / Title -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h1 style="font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 800; margin: 0 0 4px 0; color: #0f172a;">
+          Poll Session & Question Studio
+        </h1>
+        <p style="margin: 0; color: var(--text-muted); font-size: 14px;">
+          Create unique session codes, customize header banners, manage questions, and control the live experience.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button id="btn-load-defaults" class="btn-outline" style="font-size: 13px;">
+          📚 Load Sabbath School Preset (10 Qs)
+        </button>
+        <button id="btn-export-json" class="btn-outline" style="font-size: 13px;">
+          📥 Export JSON
+        </button>
+        <button id="btn-import-json" class="btn-outline" style="font-size: 13px;">
+          📤 Import JSON
+        </button>
+      </div>
+    </div>
+
+    <!-- 2 Column Master Layout -->
+    <div style="display: grid; grid-template-columns: 360px 1fr; gap: 20px; align-items: start;">
+      
+      <!-- Left Column: Session Settings & Header Branding -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        
+        <!-- Session Code & QR Box -->
+        <div class="card" style="padding: 20px;">
+          <div class="admin-card-header">
+            <h3 style="margin: 0;">Unique Response Code</h3>
+            <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">ACTIVE ROOM</span>
+          </div>
+
+          <div class="form-group">
+            <label>Response / Room Code</label>
+            <div style="display: flex; gap: 6px;">
+              <input type="text" id="admin-input-code" class="form-control" style="font-size: 18px; font-weight: 800; text-transform: uppercase; font-family: monospace; letter-spacing: 0.08em;" value="482915" />
+              <button id="btn-gen-code" class="btn-outline" style="padding: 8px 12px;" title="Generate new code">🎲</button>
+            </div>
+            <span style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+              Audience members enter this code on their phones to join this poll.
+            </span>
+          </div>
+
+          <!-- Phone Remote QR Code -->
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; margin-top: 10px; text-align: center;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+              Scan to Open Remote on Phone:
+            </div>
+            <img id="admin-remote-qr" src="" alt="Remote QR Code" style="width: 120px; height: 120px; border-radius: 8px; background: white; padding: 4px;" />
+            <div style="margin-top: 8px;">
+              <button id="btn-copy-join-link" class="btn-outline" style="font-size: 12px; padding: 6px 12px; width: 100%;">
+                📋 Copy Audience Join Link
+              </button>
+            </div>
+          </div>
+
+          <!-- Host Access PIN Configuration -->
+          <div class="form-group" style="margin-top: 14px; padding-top: 14px; border-top: 1px dashed #e2e8f0;">
+            <label>Host Access PIN (Security)</label>
+            <div style="display: flex; gap: 6px;">
+              <input type="text" id="admin-host-pin" class="form-control" style="font-family: monospace; font-weight: 700; font-size: 16px; letter-spacing: 0.1em;" value="212208" />
+              <button id="btn-save-host-pin" class="btn-outline" style="padding: 6px 12px; font-size: 12px; white-space: nowrap;">Save PIN</button>
+            </div>
+            <span style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+              Security PIN to unlock presenter tools on the homepage.
+            </span>
+          </div>
+        </div>
+
+        <!-- Audience Response Data & Reset Section -->
+        <div class="card" style="padding: 20px; border-left: 4px solid #ef4444;">
+          <div class="admin-card-header">
+            <h3 style="margin: 0; color: #0f172a;">Session Data Management</h3>
+            <span id="admin-total-responses-count" style="font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 100px; background: #fee2e2; color: #991b1b;">
+              0 Responses
+            </span>
+          </div>
+
+          <p style="font-size: 13px; color: var(--text-muted); margin: 0 0 12px 0; line-height: 1.5;">
+            Manage recorded answers and session questions:
+          </p>
+
+          <button id="btn-clear-all-responses" class="btn-primary" style="width: 100%; padding: 11px; background: #ea580c; border-color: #ea580c; color: white; font-weight: 700; font-size: 12px; margin-bottom: 8px;">
+            🔄 Clear Answered Data Alone (Keep Questions)
+          </button>
+
+          <button id="btn-delete-all-questions-sidebar" class="btn-primary" style="width: 100%; padding: 11px; background: #dc2626; border-color: #dc2626; color: white; font-weight: 700; font-size: 12px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);">
+            🗑️ Delete All Questions (Options & Explanations)
+          </button>
+
+          <div id="admin-clear-status" style="margin-top: 10px; font-size: 12px; font-weight: 600; text-align: center; display: none;"></div>
+        </div>
+
+        <!-- Header Branding & Topic Title -->
+        <div class="card" style="padding: 20px;">
+          <div class="admin-card-header">
+            <h3 style="margin: 0;">Header Branding & Topic</h3>
+          </div>
+
+          <div class="form-group">
+            <label>Lesson Topic Title</label>
+            <input type="text" id="admin-topic-title" class="form-control" value="Share HIM" placeholder="e.g. Share HIM - Lesson 13" />
+          </div>
+
+          <div class="form-group">
+            <label>Header Image URL</label>
+            <input type="text" id="admin-header-url" class="form-control" value="https://www.sabbath.school/assets/img/lessons/2026/3/_13fb.png" placeholder="https://example.com/logo.png" />
+          </div>
+
+          <!-- Preset Images -->
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">Quick Presets:</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              <span class="preset-pill" onclick="setPresetImage('https://www.sabbath.school/assets/img/lessons/2026/3/_13fb.png', 'Share HIM')">Share HIM (Sabbath School)</span>
+              <span class="preset-pill" onclick="setPresetImage('https://images.unsplash.com/photo-1507434965515-61970f2bd7c6?w=600&auto=format&fit=crop&q=80', 'Bible Study Interactive')">Open Bible</span>
+              <span class="preset-pill" onclick="setPresetImage('https://images.unsplash.com/photo-1544427920-c49ccfb85579?w=600&auto=format&fit=crop&q=80', 'Faith & Grace')">Sunrise Cross</span>
+            </div>
+          </div>
+
+          <!-- Image Preview -->
+          <div style="text-align: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 12px;">
+            <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">Live Banner Preview:</span>
+            <img id="admin-banner-preview" src="https://www.sabbath.school/assets/img/lessons/2026/3/_13fb.png" alt="Banner Preview" style="max-width: 100%; max-height: 100px; object-fit: contain; border-radius: 8px;" />
+          </div>
+
+          <button id="btn-save-branding" class="btn-primary" style="margin-top: 14px; width: 100%; padding: 12px;">
+            💾 Save Branding & Sync Screens
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Question Studio -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        
+        <!-- Questions List Header Card -->
+        <div class="card" style="padding: 20px;">
+          <div class="admin-card-header" style="margin-bottom: 12px;">
+            <div>
+              <h3 style="margin: 0;">Session Questions (<span id="admin-question-count">0</span>)</h3>
+              <span style="font-size: 13px; color: var(--text-muted);">Reorder, edit, or add new questions.</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button id="btn-delete-all-questions" class="btn-outline" style="padding: 8px 14px; font-size: 13px; color: #dc2626; border-color: #fca5a5; font-weight: 700;">
+                🗑️ Delete All Questions
+              </button>
+              <button id="btn-add-question" class="btn-primary" style="padding: 8px 16px; font-size: 13px;">
+                + Add New Question
+              </button>
+            </div>
+          </div>
+
+          <!-- Questions Container -->
+          <div id="admin-questions-list">
+            <div style="text-align: center; padding: 30px; color: var(--text-muted);">
+              Loading questions...
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Edit/Add Question Modal -->
+  <div id="modal-question" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="admin-card-header">
+        <h2 id="modal-title" style="font-size: 20px; margin: 0;">Edit Question</h2>
+        <button id="btn-close-modal" class="btn-outline" style="padding: 4px 10px; font-size: 16px;">&times;</button>
+      </div>
+
+      <input type="hidden" id="edit-q-id" />
+
+      <div class="form-group">
+        <label>Question Prompt *</label>
+        <textarea id="edit-q-prompt" class="form-control" rows="3" placeholder="Enter question text here..."></textarea>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-group">
+          <label style="color: var(--color-a);">Option A *</label>
+          <input type="text" id="edit-opt-a" class="form-control" placeholder="Option A text" />
+        </div>
+        <div class="form-group">
+          <label style="color: var(--color-b);">Option B *</label>
+          <input type="text" id="edit-opt-b" class="form-control" placeholder="Option B text" />
+        </div>
+        <div class="form-group">
+          <label style="color: var(--color-c);">Option C *</label>
+          <input type="text" id="edit-opt-c" class="form-control" placeholder="Option C text" />
+        </div>
+        <div class="form-group">
+          <label style="color: var(--color-d);">Option D *</label>
+          <input type="text" id="edit-opt-d" class="form-control" placeholder="Option D text" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Correct Biblical Option *</label>
+        <select id="edit-correct-opt" class="form-control">
+          <option value="A">Option A</option>
+          <option value="B">Option B</option>
+          <option value="C">Option C</option>
+          <option value="D">Option D</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Biblical Explanation / Why? (Shown upon reveal)</label>
+        <textarea id="edit-explanation" class="form-control" rows="3" placeholder="Scripture reference & spiritual reason for the correct answer..."></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px;">
+        <button id="btn-cancel-modal" class="btn-outline">Cancel</button>
+        <button id="btn-save-question" class="btn-primary">Save Question</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Database & Supabase Settings Modal -->
+  <div id="modal-db-settings" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="admin-card-header">
+        <h2 style="font-size: 20px; margin: 0;">⚙️ Supabase Database Settings</h2>
+        <button id="btn-close-db-modal" class="btn-outline" style="padding: 4px 10px; font-size: 16px;">&times;</button>
+      </div>
+
+      <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; font-size: 13px; color: #92400e; line-height: 1.5;">
+        <strong>⚠️ Why are changes not saving to Supabase?</strong><br>
+        On Supabase's free tier, projects pause automatically after 7 days of inactivity. If your project paused, simply log into <a href="https://supabase.com/dashboard" target="_blank" style="color: #b45309; font-weight: 700; text-decoration: underline;">supabase.com/dashboard</a> and click <strong>"Restore project"</strong>.
+        <br><br>
+        <strong>⚡ Cloud Sync Live:</strong> Even when Supabase is offline or paused, our built-in Cloud WebSocket Sync actively keeps all audience phones, projectors, and remotes in real-time sync across the internet!
+      </div>
+
+      <div class="form-group">
+        <label>Supabase Project URL</label>
+        <input type="text" id="input-supabase-url" class="form-control" placeholder="https://xyz.supabase.co" />
+      </div>
+
+      <div class="form-group">
+        <label>Supabase Anon Key</label>
+        <textarea id="input-supabase-key" class="form-control" rows="3" placeholder="eyJhbGciOiJIUzI1Ni..."></textarea>
+      </div>
+
+      <div id="db-health-result" style="padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; margin-bottom: 14px; display: none;"></div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; gap: 8px;">
+          <button id="btn-test-db-connection" class="btn-outline">🔌 Test Connection</button>
+          <button id="btn-reset-db-creds" class="btn-outline" style="color: #991b1b;">↺ Reset Defaults</button>
+        </div>
+        <button id="btn-save-db-creds" class="btn-primary">Save & Connect</button>
+      </div>
+
+      <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #e2e8f0; font-size: 12px; color: var(--text-muted);">
+        <strong>SQL Schema:</strong> A complete database schema file is included in your project as <code>supabase_schema.sql</code>. Paste it into your Supabase SQL Editor to initialize all tables and realtime replication.
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="file-import-json" accept=".json" style="display: none;" />
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

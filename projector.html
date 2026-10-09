@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projector Big Screen — Live Poll</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Google Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'hi,ta,te,kn,ml,mr,gu,bn,pa,or',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <style>
+    /* Projector specific responsive optimizations */
+    body {
+      padding: clamp(8px, 2vw, 24px);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .projector-q-text {
+      font-size: clamp(22px, 3.2vw, 34px);
+      line-height: 1.35;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 20px;
+    }
+    .projector-opt-card {
+      padding: 16px 20px;
+      border-radius: 18px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 700;
+      border: 2px solid #e2e8f0;
+      background: #ffffff;
+      transition: all 0.3s ease;
+    }
+    .projector-timer-ring {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 20px;
+      border: 2px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Utilities Bar -->
+  <div class="top-nav-bar">
+    <div class="nav-links">
+      <a href="index.html?host=true" class="nav-pill">&larr; Home</a>
+      <span class="room-code-tag">
+        SESSION CODE: <span id="proj-code-badge" class="room-code-val">------</span>
+      </span>
+      <div class="attendance-badge" style="margin: 0;">
+        <span id="proj-attendance-count">1</span> participating
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <button id="btn-toggle-sound" class="btn-outline" style="padding: 6px 14px; font-size: 13px;" title="Toggle Timer Audio">
+        🔊 Sound: ON
+      </button>
+      <button id="btn-fullscreen" class="btn-outline" style="padding: 6px 14px; font-size: 13px;" title="Full Screen Presentation">
+        ⛶ Fullscreen
+      </button>
+      <a id="link-phone-remote" href="remote.html" target="_blank" class="btn-primary" style="padding: 6px 14px; font-size: 13px; text-decoration: none;">
+        📱 Open Remote
+      </a>
+    </div>
+  </div>
+
+  <!-- Header Banner Area -->
+  <div class="brand-logo-container" style="max-width: 900px; margin-bottom: 16px;">
+    <div class="brand-logo-wrapper">
+      <img id="proj-banner-img" src="https://www.sabbath.school/assets/img/lessons/2026/3/_13fb.png" alt="Sabbath School Logo" class="brand-logo" style="max-height: 140px;" />
+      <h1 class="lesson-topic-title" id="proj-topic-title">Share HIM</h1>
+    </div>
+  </div>
+
+  <!-- Big Screen 2-Column Presentation Stage -->
+  <div class="projector-stage">
+    
+    <!-- Left Column: Active Question & Interactive Options -->
+    <div class="card" style="display: flex; flex-direction: column; height: 100%;">
+      
+      <!-- Slide Phase & Order Badge -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="font-size: 14px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em;" id="proj-q-order-badge">
+          Question 1 of 10
+        </div>
+        <div id="proj-slide-mode-pill" style="font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 50px; background: #ede9fe; color: var(--primary);">
+          VOTING OPEN
+        </div>
+      </div>
+
+      <!-- Question Text -->
+      <div id="proj-question-text" class="projector-q-text">
+        Loading Presentation Questions...
+      </div>
+
+      <!-- Options List -->
+      <div id="proj-options-container" style="display: flex; flex-direction: column; width: 100%;">
+        <div class="projector-opt-card" id="proj-card-a">
+          <span class="opt-prefix" style="background: var(--color-a); color: white;">A</span>
+          <span id="proj-text-a" style="flex: 1;">Option A</span>
+        </div>
+        <div class="projector-opt-card" id="proj-card-b">
+          <span class="opt-prefix" style="background: var(--color-b); color: white;">B</span>
+          <span id="proj-text-b" style="flex: 1;">Option B</span>
+        </div>
+        <div class="projector-opt-card" id="proj-card-c">
+          <span class="opt-prefix" style="background: var(--color-c); color: white;">C</span>
+          <span id="proj-text-c" style="flex: 1;">Option C</span>
+        </div>
+        <div class="projector-opt-card" id="proj-card-d">
+          <span class="opt-prefix" style="background: var(--color-d); color: white;">D</span>
+          <span id="proj-text-d" style="flex: 1;">Option D</span>
+        </div>
+      </div>
+
+      <!-- Biblical Explanation Reveal Container -->
+      <div id="proj-explanation-container" style="display: none; margin-top: 16px;"></div>
+
+      <div id="google_translate_element" style="margin-top: auto; padding-top: 12px; display: flex; justify-content: center;"></div>
+    </div>
+
+    <!-- Right Column: Join QR Code, 15s Timer & Live Vote Chart -->
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      
+      <!-- Join QR & Instructions Box -->
+      <div class="projector-join-box">
+        <div>
+          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #a5b4fc; font-weight: 700;">Join On Your Phone</div>
+          <div style="font-size: 24px; font-weight: 800; margin: 2px 0;">Enter Code: <span id="proj-qr-code" style="color: #facc15; font-family: monospace;">------</span></div>
+          <div style="font-size: 12px; color: #c7d2fe;" id="proj-join-url">Visit: bit.ly/ss-poll or scan QR</div>
+        </div>
+        <img id="proj-qr-img" src="" alt="Scan to join" class="projector-qr-img" />
+      </div>
+
+      <!-- 15-Second Timer Widget -->
+      <div class="card" style="padding: 18px 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="margin: 0;">⏱️ Response Timer</h3>
+          <span id="proj-timer-status" style="font-size: 12px; font-weight: 700; color: var(--text-muted);">READY (15s)</span>
+        </div>
+
+        <div class="timer-container" style="margin: 14px 0 6px 0;">
+          <div id="proj-timer-box" class="timer-box" style="width: 100%; justify-content: center;">
+            <span style="font-size: 20px;">⏳</span>
+            <span id="proj-timer-digits" class="timer-digits">15</span>
+            <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);">SEC</span>
+          </div>
+        </div>
+
+        <div class="timer-progress-bar-wrap">
+          <div id="proj-timer-progress-fill" class="timer-progress-fill" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Live Responses Metric Chart -->
+      <div class="card" style="padding: 18px 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="margin: 0;">📊 Live Response Feed</h3>
+          <span id="proj-total-votes" style="font-size: 12px; font-weight: 700; color: var(--primary);">0 votes</span>
+        </div>
+
+        <div class="native-chart">
+          <div class="chart-row">
+            <div class="chart-label-container">
+              <span id="proj-lbl-a">Option A</span>
+              <span class="chart-count-text" id="proj-cnt-a">0 votes (0%)</span>
+            </div>
+            <div class="chart-track"><div id="proj-pbar-a" class="chart-fill" style="background: var(--color-a);"></div></div>
+          </div>
+          
+          <div class="chart-row">
+            <div class="chart-label-container">
+              <span id="proj-lbl-b">Option B</span>
+              <span class="chart-count-text" id="proj-cnt-b">0 votes (0%)</span>
+            </div>
+            <div class="chart-track"><div id="proj-pbar-b" class="chart-fill" style="background: var(--color-b);"></div></div>
+          </div>
+          
+          <div class="chart-row">
+            <div class="chart-label-container">
+              <span id="proj-lbl-c">Option C</span>
+              <span class="chart-count-text" id="proj-cnt-c">0 votes (0%)</span>
+            </div>
+            <div class="chart-track"><div id="proj-pbar-c" class="chart-fill" style="background: var(--color-c);"></div></div>
+          </div>
+          
+          <div class="chart-row">
+            <div class="chart-label-container">
+              <span id="proj-lbl-d">Option D</span>
+              <span class="chart-count-text" id="proj-cnt-d">0 votes (0%)</span>
+            </div>
+            <div class="chart-track"><div id="proj-pbar-d" class="chart-fill" style="background: var(--color-d);"></div></div>
+          </div>
+
+          <!-- Custom Write-In Answers Bar -->
+          <div class="chart-row">
+            <div class="chart-label-container">
+              <span style="color: var(--text-muted); font-style: italic;">Custom Write-In</span>
+              <span class="chart-count-text" id="proj-cnt-custom">0 votes (0%)</span>
+            </div>
+            <div class="chart-track"><div id="proj-pbar-custom" class="chart-fill" style="background: var(--color-custom);"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script type="module" src="projector.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Presenter Phone Remote — Live Poll</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      padding: 12px 14px 40px 14px;
+      background: #f1f5f9;
+      touch-action: manipulation;
+    }
+    .remote-card {
+      background: white;
+      border-radius: 20px;
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      margin-bottom: 14px;
+    }
+    .timer-control-panel {
+      background: linear-gradient(135deg, #312e81 0%, #1e1b4b 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 20px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(49, 46, 129, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="remote-phone-shell">
+    
+    <!-- Top Remote Header Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <a href="index.html?host=true" class="nav-pill">&larr; Exit Remote</a>
+      <span class="room-code-tag">
+        CODE: <span id="remote-code-val" class="room-code-val">------</span>
+      </span>
+      <a id="link-admin-studio" href="admin.html" class="nav-pill" style="color: var(--primary);">⚙️ Studio</a>
+    </div>
+
+    <!-- Active Presentation Monitor Card -->
+    <div class="remote-card" style="border-left: 5px solid var(--primary);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span id="remote-q-badge" style="font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase;">QUESTION 1 OF 10</span>
+        <span id="remote-mode-pill" style="font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 100px; background: #ede9fe; color: var(--primary);">VOTING</span>
+      </div>
+
+      <div id="remote-q-text" style="font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.4; margin-bottom: 10px;">
+        Loading Question...
+      </div>
+
+      <!-- Quick Question Selector -->
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <label for="remote-q-select" style="font-size: 12px; font-weight: 700; color: var(--text-muted); white-space: nowrap;">Jump To:</label>
+        <select id="remote-q-select" class="form-control" style="padding: 8px 12px; font-size: 13px; font-weight: 600;">
+          <option>Loading questions...</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 15-Second Timer Remote Trigger Section -->
+    <div class="timer-control-panel">
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #a5b4fc; font-weight: 700; margin-bottom: 4px;">
+        15-Second Question Timer
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin: 10px 0;">
+        <span id="remote-timer-digits" style="font-family: 'Outfit', monospace; font-size: 42px; font-weight: 900; color: #facc15; line-height: 1;">
+          15
+        </span>
+        <span style="font-size: 14px; font-weight: 700; color: #c7d2fe;">SECONDS</span>
+      </div>
+
+      <div style="font-size: 12px; color: #cbd5e1; margin-bottom: 14px;" id="remote-timer-status-hint">
+        Tick-tick sounds in last 5s &bull; Buzzer sounds at 0s
+      </div>
+
+      <!-- Big Timer Action Trigger -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px;">
+        <button id="btn-remote-start-timer" class="btn-primary" style="padding: 16px; font-size: 16px; font-weight: 800; background: #10b981 !important; border-radius: 16px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+          ▶ Start 15s Timer
+        </button>
+        <button id="btn-remote-reset-timer" class="btn-outline" style="padding: 16px; font-size: 14px; font-weight: 700; color: white !important; border-color: rgba(255,255,255,0.3) !important; border-radius: 16px;">
+          ↺ Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Handheld Primary Presentation Controls Grid -->
+    <div class="remote-action-grid">
+      
+      <!-- Button 1: Next Step / Reveal Explanation (Step-by-Step) -->
+      <button id="btn-remote-reveal" class="remote-big-btn" style="background: #ecfdf5 !important; border: 2px solid #10b981 !important; color: #065f46 !important;">
+        <span style="font-size: 16px; font-weight: 900;">💡 Show Explanation</span>
+        <span class="sub" style="color: #047857;">Step 1: Reveal Answer</span>
+      </button>
+
+      <!-- Button 2: Next Question (Direct Jump from one question to another) -->
+      <button id="btn-remote-next-q" class="btn-primary remote-big-btn" style="background: #4f46e5 !important; border: 2px solid #4338ca !important;">
+        <span style="font-size: 16px; font-weight: 900;">Next Question ⏩</span>
+        <span class="sub" id="btn-remote-next-sub" style="color: #c7d2fe;">Step 2: Jump to Next Q</span>
+      </button>
+
+      <!-- Previous Question (Direct Jump Back) -->
+      <button id="btn-remote-prev" class="remote-big-btn" style="background: #ffffff; border: 1px solid #e2e8f0;">
+        <span style="font-size: 15px; font-weight: 800;">⏮ Prev Question</span>
+        <span class="sub">Jump to previous Q</span>
+      </button>
+
+      <!-- Lock / Unlock Voting -->
+      <button id="btn-remote-lock" class="remote-big-btn" style="background: #ffffff; border: 1px solid #e2e8f0;">
+        <span id="remote-lock-label" style="font-size: 15px; font-weight: 800;">🔒 LOCK</span>
+        <span class="sub">Toggle voting access</span>
+      </button>
+
+      <!-- Reset Question Votes -->
+      <button id="btn-remote-reset-votes" class="remote-big-btn btn-full" style="background: #ffffff; color: #991b1b; border: 1px solid #fecaca; padding: 14px !important;">
+        <span style="font-size: 14px; font-weight: 800;">🔄 RE-POLL / Reset Current Question Votes</span>
+      </button>
+
+      <!-- Projector Shortcut -->
+      <a id="link-open-proj-window" href="projector.html" target="_blank" class="btn-outline remote-big-btn btn-full" style="text-decoration: none; padding: 12px !important; margin-top: 4px;">
+        <span>📺 Open Projector Screen</span>
+      </a>
+
+    </div>
+
+    <!-- Live Audience Votes Monitor -->
+    <div class="remote-card" style="margin-top: 14px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="margin: 0;">Live Vote Tally</h3>
+        <span id="remote-total-votes" style="font-size: 13px; font-weight: 800; color: var(--primary);">0 Votes</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div style="background: #f8fafc; padding: 10px 12px; border-radius: 12px; border-left: 4px solid var(--color-a);">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">OPTION A</div>
+          <div id="remote-vote-a" style="font-size: 15px; font-weight: 800; color: #0f172a;">0 (0%)</div>
+        </div>
+        <div style="background: #f8fafc; padding: 10px 12px; border-radius: 12px; border-left: 4px solid var(--color-b);">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">OPTION B</div>
+          <div id="remote-vote-b" style="font-size: 15px; font-weight: 800; color: #0f172a;">0 (0%)</div>
+        </div>
+        <div style="background: #f8fafc; padding: 10px 12px; border-radius: 12px; border-left: 4px solid var(--color-c);">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">OPTION C</div>
+          <div id="remote-vote-c" style="font-size: 15px; font-weight: 800; color: #0f172a;">0 (0%)</div>
+        </div>
+        <div style="background: #f8fafc; padding: 10px 12px; border-radius: 12px; border-left: 4px solid var(--color-d);">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">OPTION D</div>
+          <div id="remote-vote-d" style="font-size: 15px; font-weight: 800; color: #0f172a;">0 (0%)</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="remote.js"></script>
+</body>
+</html>
